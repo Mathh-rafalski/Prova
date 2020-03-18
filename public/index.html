@@ -1,0 +1,97 @@
+<html>
+
+<head>
+    <style>
+        .row {
+            border: 1px solid black;
+            height: 100%;
+            width: 100%;
+        }
+
+        .coluna {
+            background: #19b7d0;
+            width: 4.5%;
+            margin-left: 1%;
+            float: left;
+            height: 100%;
+        }
+
+        .alo {
+            background: white
+        }
+
+        .inacreditavel {
+            text-orientation: upright;
+            writing-mode: tb;
+            text-align: center
+        }
+
+        .ano {
+            margin-top: 750px;
+
+        }
+    </style>
+</head>
+
+<body onload='gerarGrafico()'>
+    <div class='row' id='row'>
+
+    </div>
+
+</body>
+
+<script>
+    var totalSalarios = 0;
+    function gerarGrafico() {
+        console.log('alo')
+        div = document.getElementById('row')
+        fetch('http://localhost/salarios', {
+            method: 'get',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+        }).then(response => response.json())
+            .then(data => {
+                data.forEach(element => {
+                    if (element.salario > totalSalarios) {
+                        totalSalarios = element.salario
+                    }
+                })
+                // x * 100 /total
+                data.forEach(element => {
+                    console.log(element.salario)
+                    let porcentagem = element.salario * 100 / totalSalarios
+                    porcentagem = 100 - porcentagem
+                    porcentagem += '%'
+                    let salario = Math.round(element.salario)
+                    let f = salario.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' });
+
+                    div.innerHTML += `<div class='coluna' title='${f}'>
+                            <div class='alo' style='height:${porcentagem}'>
+                                <div class='inacreditavel'>
+                                        </div>
+                                        <div class='ano'>
+                                    <span class='ano'>${element.ano}<span>
+                                        </div>
+                                        </div>
+                                       
+                            </div>
+                          
+                           `
+                })
+                /*div.innerHTML += `<div class='coluna'>
+                            <div class='alo' style='height:${total}'><div>
+                            <div class='bora'>
+                            <span class='oi'>Outros<span><br>
+                            <span class='inacreditavel'>${porc}<span>
+                            <div>
+                            
+                            </div>
+                           `*/
+
+            })
+    }
+</script>
+
+</html>
